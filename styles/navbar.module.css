@@ -1,0 +1,21 @@
+.navlink {
+  text-decoration: none;
+  text-transform: capitalize;
+  position: relative;
+  margin : auto 4px;
+}
+
+.navlink a::before {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background-color: black;
+  transition: all 0.5s;
+}
+
+.navlink a:hover::before {
+  width: 100%;
+}
