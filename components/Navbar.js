@@ -7,8 +7,9 @@ import { FaShoppingCart } from "react-icons/fa";
 import { CiCirclePlus } from "react-icons/ci";
 import { CiCircleMinus } from "react-icons/ci";
 
-const Navbar = () => {
+const Navbar = (props) => {
   const ref = useRef();
+  const { cart, removeFromCart, subTotal, clearCart,addToCart } = props;
   const [icon, setIcon] = useState("bars");
   const [selected, setSelected] = useState(false);
   const handleIcon = () => {
@@ -34,21 +35,17 @@ const Navbar = () => {
         setIcon("bars"))
       : (ul.classList.add("left-0"), ul.classList.remove("-left-[100%]"));
   };
-  const handleSidebar = () => {
-    console.log("hi");
-    const sidebar1 = document.querySelector(".sidebar1");
-    const sidebar2 = document.querySelector(".sidebar2");
+  const handleSidebar = (e) => {
+    e.preventDefault();
+    // const sidebar1 = document.querySelector(".sidebar1");
+    const sidebar = document.querySelector(".sidebar");
     !selected
       ? (setSelected(true),
-        sidebar1.classList.remove("-right-[150%]"),
-        sidebar1.classList.add("right-0"),
-        sidebar2.classList.remove("-right-[150%]"),
-        sidebar2.classList.add("right-0"))
+        sidebar.classList.remove("-right-[150%]"),
+        sidebar.classList.add("right-0"))
       : (setSelected(false),
-        sidebar1.classList.add("-right-[150%]"),
-        sidebar1.classList.remove("right-0"),
-        sidebar2.classList.add("-right-[150%]"),
-        sidebar2.classList.remove("right-0"));
+        sidebar.classList.add("-right-[150%]"),
+        sidebar.classList.remove("right-0"));
   };
   return (
     <>
@@ -89,19 +86,6 @@ const Navbar = () => {
             <button type="button" onClick={handleSidebar}>
               View Cart
             </button>
-            <div className="sidebar1 w-[100vw]  h-[100vh] fixed -right-[150%] top-0  transition-all duration-300 z-[50] flex flex-row lg:hidden">
-              <div className="w-[25%] bg-black/80 opacity-20 h-[100vh]"></div>
-              <div className="w-[75%] bg-white flex flex-col">
-                <button
-                  type="button"
-                  onClick={handleSidebar}
-                  className="border-2 border-black h-12 w-12 grid place-content-center p-1 ml-auto rounded-xl bg-white"
-                >
-                  <IoCloseOutline />
-                </button>
-                1 2 3 4
-              </div>
-            </div>
           </li>
         </ul>
         <div className="hidden lg:block my-auto mr-24">
@@ -116,79 +100,72 @@ const Navbar = () => {
               <Link href="/hoodies">Hoodies</Link>
             </li>
             <li className={styles.navlink}>
-              <Link className={styles.navlink} href="#">
-                <button type="button" onClick={handleSidebar}>
-                  <FaShoppingCart />
-                </button>
-                <div className="sidebar2 w-[100vw] h-[100vh] fixed -right-[150%] top-0  transition-all duration-300 z-[50] flex flex-row">
-                  <div className="w-[65%] bg-black/80 opacity-20 h-[100vh]"></div>
-                  <div className="w-[35%] bg-white flex flex-col p-6">
-                    <button
-                      type="button"
-                      onClick={handleSidebar}
-                      className="border-2 border-black h-12 w-12 grid place-content-center p-1 ml-auto rounded-xl bg-white"
-                    >
-                      <IoCloseOutline />
-                    </button>
-                    <div>
-                      <h1 className="font-bold text-xl"> Shopping Cart</h1>
-                      <ol className="list-decimal space-y-5 mt-5 ml-4">
-                        <li>
-                        <div className="flex flex-row">
-                          <h3 className="mr-4">The Catalyzer [Tshirt] </h3>
-                          <h3 className="flex justify-center my-auto">
-                            {" "}
-                            <span className="my-auto">
-                              <CiCircleMinus />
-                            </span>
-                            2{" "}
-                            <span className="my-auto">
-                              {" "}
-                              <CiCirclePlus />
-                            </span>
-                          </h3>
-                          </div>
-                        </li>
-                        <li>
-                        <div className="flex flex-row">
-                          <h3 className="mr-4">1. The Catalyzer [Tshirt] </h3>
-                          <h3 className="flex justify-center my-auto">
-                            {" "}
-                            <span className="my-auto">
-                              <CiCircleMinus />
-                            </span>
-                            3{" "}
-                            <span className="my-auto">
-                              {" "}
-                              <CiCirclePlus />
-                            </span>
-                          </h3>
-                          </div>
-                        </li>
-                        <li>
-                          <div className="flex flex-row">
-
-                          <h3 className="mr-4">1. The Catalyzer [Tshirt] </h3>
-                          <h3 className="flex justify-center my-auto">
-                            {" "}
-                            <span className="my-auto">
-                              <CiCircleMinus />
-                            </span>
-                            2{" "}
-                            <span className="my-auto">
-                              {" "}
-                              <CiCirclePlus />
-                            </span>
-                          </h3>
-                          </div>
-                        </li>
-                      </ol>
-                    </div>
-                  </div>
-                </div>
-              </Link>
+              <button type="button" onClick={handleSidebar}>
+                <FaShoppingCart />
+              </button>
             </li>
           </ul>
+        </div>
+        <div className="sidebar w-[100vw] h-[100vh] fixed -right-[150%] top-0  transition-all duration-300 z-[50] flex flex-row">
+          <div className="w-[20%] md:w-[65%] bg-black/80 opacity-20 h-[100vh]"></div>
+          <div className="w-[80%] md:w-[35%] bg-white flex flex-col p-6">
+            <button
+              type="button"
+              onClick={handleSidebar}
+              className="border-2 border-black h-12 w-12 grid place-content-center p-1 ml-auto rounded-xl bg-white"
+            >
+              <IoCloseOutline />
+            </button>
+            <div>
+              <h1 className="font-bold text-xl"> Shopping Cart</h1>
+              {Object.keys(cart).length > 0 ? (
+                <ol className="list-decimal space-y-5 mt-5 ml-4">
+                  {Object.keys(cart).map((item) => {//item is the itemCode
+                    return (
+                      <li key={item}>
+                        <div className="flex flex-row">
+                          <h3 className="mr-4 text-xl">{cart[item].name} </h3>
+                          <h3 className="flex justify-center my-auto text-lg md:text-xl">
+                            <span className="my-auto" onClick={()=>{removeFromCart(item,1,cart[item].price,cart[item].name,cart[item].size,cart[item].variant)}}>
+                              <CiCircleMinus />
+                            </span>
+                            {cart[item].qty}
+                            <span className="my-auto bg-orange-50" onClick={()=>{addToCart(item,1,cart[item].price,cart[item].name,cart[item].size,cart[item].variant)}}>
+                              <CiCirclePlus />
+                            </span>
+                            {/* {subTotal} */}
+                          </h3>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ol>
+              ) : (
+                <h2 className="text-center mt-10 font-normal">
+                  Cart is Empty. Add a few items to checkout
+                </h2>
+              )}
+            </div>
+            <div
+              className={`${
+                Object.keys(cart).length == 0 ? "hidden" : "block"
+              } flex flex-row justify-center`}
+            >
+              <button
+                onClick={clearCart}
+                type="button"
+                className="py-2 border-2 border-black transition-none lg:transition-all duration-300 px-4 mx-2 my-4 hover:bg-black hover:text-white"
+              >
+                Clear Cart
+              </button>
+              <button
+                type="button"
+                className="py-2 border-2 border-black transition-none lg:transition-all duration-300 px-4 mx-2 my-4 hover:bg-black hover:text-white"
+              >
+                Checkout
+              </button>
+            </div>
+          </div>
         </div>
       </nav>
     </>

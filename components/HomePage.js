@@ -94,7 +94,7 @@ const HomePage = () => {
                   viewport={{
                     once: true,
                   }}
-                  custom={2}
+                  custom={1.5}
                 >
                   <Link href={`/product/code`} className="">
                     <div className="block relative h-48 rounded overflow-hidden ">
@@ -123,7 +123,7 @@ const HomePage = () => {
                   viewport={{
                     once: true,
                   }}
-                  custom={3}
+                  custom={2}
                 >
                   <Link
                     href={`/product/code`}
@@ -156,7 +156,7 @@ const HomePage = () => {
                   viewport={{
                     once: true,
                   }}
-                  custom={4}
+                  custom={2.5}
                 >
                   <Link
                     href={`/product/code`}
@@ -189,7 +189,7 @@ const HomePage = () => {
                   viewport={{
                     once: true,
                   }}
-                  custom={5}
+                  custom={3}
                 >
                   <Link
                     href={`/product/code`}
@@ -222,7 +222,7 @@ const HomePage = () => {
                   viewport={{
                     once: true,
                   }}
-                  custom={6}
+                  custom={3.5}
                 >
                   <Link
                     href={`/product/code`}
