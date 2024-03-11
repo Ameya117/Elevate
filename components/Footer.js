@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-
+import { useRouter } from "next/router";
 const Footer = () => {
+  const router = useRouter();
+  const path = router.pathname;
+
   return (
+    <div
+      className={`${router.pathname === "/signup" ? "hidden" : "block"} ${
+        router.pathname === "/login" ? "hidden" : "block"
+      } ${router.pathname === "/forgot" ? "hidden" : "block"}  mt-10`}
+    >
       <footer className="text-gray-600 body-font shadow-2xl">
         <div className="container px-5 py-24 mx-auto flex md:items-center lg:items-start md:flex-row md:flex-nowrap flex-wrap flex-col">
           <div className="w-64 flex-shrink-0 md:mx-0 mx-auto text-center md:text-left">
@@ -193,6 +201,7 @@ const Footer = () => {
           </div>
         </div>
       </footer>
+    </div>
   );
 };
 

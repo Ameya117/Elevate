@@ -1,104 +1,61 @@
 import React from "react";
 import Link from "next/link";
-const Shoes = () => {
-  const data = [
-    {
-      id: 2001,
-      imgsrc: "/sneaker1.jpg",
-      category: "Hoodies",
-      price: "1999",
-      name: "The Catalyzer",
-      url: "/product/code",
-    },
-    {
-      id: 2002,
-      imgsrc: "/sneaker2.webp",
-      category: "Hoodies",
-      price: "999",
-      name: "Shooting Stars",
-      url: "/product/code",
-    },
-    {
-      id: 2003,
-      imgsrc: "/sneaker1.jpg",
-      category: "Hoodies",
-      price: "1999",
-      name: "The Catalyzer",
-      url: "/product/code",
-    },
-    {
-      id: 2004,
-      imgsrc: "/sneaker2.webp",
-      category: "Hoodies",
-      price: "1999",
-      name: "The Catalyzer",
-      url: "/product/code",
-    },
-    {
-      id: 2005,
-      imgsrc: "/sneaker1.jpg",
-      category: "Hoodies",
-      price: "1999",
-      name: "The 400 Blows",
-      url: "/product/code",
-    },
-    {
-      id: 2006,
-      imgsrc: "/sneaker2.webp",
-      category: "Hoodies",
-      price: "2199",
-      name: "Shooting Stars",
-      url: "/product/code",
-    },
-    {
-      id: 2007,
-      imgsrc: "/sneaker1.jpg",
-      category: "Hoodies",
-      price: "2299",
-      name: "The Catalyzer",
-      url: "/product/code",
-    },
-    {
-      id: 2008,
-      imgsrc: "/sneaker2.webp",
-      category: "Hoodies",
-      price: "899",
-      name: "The Catalyzer",
-      url: "/product/code",
-    },
-  ];
+import mongoose from "mongoose";
+import Product from "@/Models/Product";
+
+const Shoes = (props) => {
+  const {products} = props;
+console.log(products)
   return (
     <>
       <div className="text-gray-600 body-font px-4">
-        <div className="py-2 mx-auto">
-          <div className="grid md:grid-cols-2 lg:gap-10 lg:grid-cols-3">
-            {data ? (
-              data.map((item) => {
+        <div className="py-2">
+          <div className="grid md:grid-cols-2 xl:grid-cols-3 md:px-10 lg:px-24">
+            {products ? (
+              Object.keys(products).map((item) => {
                 return (
                   <Link
-                    key={item.id}
-                    href={`${item.url}`}
-                    className="h-[45vh] w-[65vw] md:w-[40vw] lg:w-[30vw] shadow-xl m-2 md:m-4 mx-auto"
+                    key={products[item]._id}
+                    href={`/product/${products[item].slug}`}
+                    className="h-[45vh] w-[65vw] md:w-[30vw] lg:w-[25vw] xl:w-[20vw] lg:h-[65vh] shadow-xl m-2 md:m-4 mx-auto "
                   >
-                    <div className="block relative h-[60%] rounded overflow-hidden">
+                    <div className="block relative h-[65%] rounded overflow-hidden">
                       <img
                         alt="ecommerce"
-                        className="object-cover object-center w-full h-full block"
-                        src={`${item.imgsrc}`}
+                        className="object-cover object-bottom w-full h-full block"
+                        src={`${products[item].img}`}
                       />
                     </div>
                     <div className="p-4">
-                      <h2 className="text-gray-900 title-font text-xl font-medium">
-                        {item.name}
+                      <h3>{products[item].category}</h3>
+                      <h2 className="text-gray-900 title-font text-xl md:text-2xl font-semibold">
+                        {products[item].title}
                       </h2>
-                      <p className="mt-1">₹{item.price}</p>
+                      <p className="mt-1">₹{products[item].price}</p>
+                      <div className="mt-1">
+                        <span>Sizes: </span>
+                        {products[item].size.includes("S") && <span className="border px-1 mx-1 w-4 border-black">S</span>}
+                        {products[item].size.includes("M") && <span className="border px-1 mx-1 w-4 border-black">M</span>}
+                        {products[item].size.includes("L") && <span className="border px-1 mx-1 w-4 border-black">L</span>}
+                        {products[item].size.includes("XL") && <span className="border px-1 mx-1 w-4 border-black">XL</span>}
+                      </div>
+                      <div className="mt-1 flex flex-row">
+                        <span>Colors: </span>
+                        {products[item].color.includes("green") && <div className="bg-lime-500 h-4 w-4 mx-1 rounded-xl my-auto"></div>}
+                        {products[item].color.includes("yellow") && <div className="bg-yellow-400 h-4 w-4 mx-1 rounded-xl my-auto"></div>}
+                        {products[item].color.includes("black") && <div className="bg-black h-4 w-4 mx-1 rounded-xl my-auto"></div>}
+                        {products[item].color.includes("white") && <div className="bg-white border border-black h-4 w-4 mx-2 rounded-xl my-auto"></div>}
+                        {products[item].color.includes("red") && <div className="bg-red-500 h-4 w-4 mx-1 rounded-xl my-auto"></div>}
+                        {products[item].color.includes("pink") && <div className="bg-pink-500 h-4 w-4 mx-1 rounded-xl my-auto"></div>}
+                        {products[item].color.includes("blue") && <div className="bg-blue-500 h-4 w-4 mx-1 rounded-xl my-auto"></div>}
+                      </div>
                     </div>
                   </Link>
                 );
               })
             ) : (
-              <div className="w-[100vw] h-[70vh]">
-                <h1 className="text-3xl font-semibold grid place-content-center mt-12">
+              <div className="w-[100%] h-[70vh] mt-12 mx-auto">
+                <h1 className="text-3xl font-semibold text-center">
                   No items available
                 </h1>
               </div>
@@ -110,4 +67,37 @@ const Shoes = () => {
   );
 };
 
+export async function getServerSideProps(context) {
+  
+  if (!mongoose.connections[0].readyState) {
+    await mongoose.connect(process.env.MONGO_URI);
+  }
+  let products = await Product.find({ category: "Shoes" });
+  let shoes = {};
+  for (let item of products) {
+    if (item.title in shoes) {
+      if (
+        !shoes[item.title].color.includes(item.color) &&
+        item.availableQty > 0
+      ) {
+        shoes[item.title].color.push(item.color);
+      }
+      if (
+        !shoes[item.title].size.includes(item.size) &&
+        item.availableQty > 0
+      ) {
+        shoes[item.title].size.push(item.size);
+      }
+    } else {
+      shoes[item.title] = JSON.parse(JSON.stringify(item));
+      if (item.availableQty > 0) {
+        shoes[item.title].color = [item.color];
+        shoes[item.title].size = [item.size];
+      }
+    }
+  }
+  return {
+    props: { products:JSON.parse(JSON.stringify(shoes))}, // will be passed to the page component as props
+  };
+}
 export default Shoes;
