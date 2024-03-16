@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
@@ -10,6 +10,11 @@ const Forgot = () => {
   const handleOnChange = (event) => {
     setCredentials({ ...credentials, [event.target.name]: event.target.value });
   };
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      router.push("/");
+    }
+  }, []);
 
   const handleOnSubmit = async (event) => {
     event.preventDefault();

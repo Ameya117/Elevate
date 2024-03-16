@@ -32,7 +32,7 @@ const HomePage = () => {
       category: "TSHIRTS",
       imgsrc: "/tshirt1.webp",
       custom: 1.5,
-      slug: "tshirt1",
+      slug: "tshirt1lblack",
       price: 499,
     },
     {
@@ -40,7 +40,7 @@ const HomePage = () => {
       category: "HOODIES",
       imgsrc: "/hoodies1.webp",
       custom: 2,
-      slug: "hoodie1",
+      slug: "hoodie1xlwhite",
       price: 899,
     },
     {
@@ -56,15 +56,15 @@ const HomePage = () => {
       category: "TSHIRTS",
       imgsrc: "/tshirt2.webp",
       custom: 3,
-      slug: "tshirt2",
+      slug: "tshirt2lblack",
       price: 499,
     },
     {
       title: "Hoodie 2",
       category: "HOODIES",
       imgsrc: "/hoodies2.webp",
-      custom: 2,
-      slug: "hoodie2",
+      custom: 3.5,
+      slug: "hoodie2mpink",
       price: 499,
     },
   ];
@@ -105,13 +105,14 @@ const HomePage = () => {
           </div>
 
           <section className="text-gray-600 body-font">
-            <div className="px-3 py-2 mx-auto">
-              <div className="flex flex-wrap justify-between">
+            <div className=" grid place-content-center">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-3 md:gap-x-10 lg:gap-x-28">
                 {data &&
                   data.map((item) => {
                     return (
                       <motion.div
-                        className="lg:w-[20vw] md:w-[35vw] w-full shadow-xl m-2 md:m-0"
+                      key={item.slug}
+                        className="w-[60vw] md:w-[35vw] lg:w-[22vw] shadow-xl m-2 md:m-0"
                         variants={fadeInAnimationVariants}
                         initial="initial"
                         whileInView="animate"

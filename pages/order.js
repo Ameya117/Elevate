@@ -8,9 +8,10 @@ const Order = ({ subTotal }) => {
           <div className="lg:w-4/5 mx-auto flex flex-wrap">
             <div className="lg:w-1/2 w-full lg:pr-10 lg:py-6 mb-6 lg:mb-0">
               {/* <h2 className="text-sm title-font text-gray-500 tracking-widest">ELEVATE</h2> */}
-              <h1 className="text-gray-900 text-3xl title-font font-medium mb-4">
+              <h1 className="text-gray-900 text-2xl title-font font-medium mb-4">
                 ELEVATE
               </h1>
+              <span className="text-sm text-slate-500">Your order has been placed successfully!</span>
               <div class="flex flex-row justify-between mb-4 w-[100%]">
                 <a class="flex-grow border-b-2 py-2 text-lg px-1 text-center">
                   Item
@@ -40,11 +41,11 @@ const Order = ({ subTotal }) => {
                 <span className="ml-auto text-gray-900">2</span>
               </div>
               <div className="flex">
-                <span className="title-font font-medium text-2xl text-gray-900">
+                <span className="title-font font-medium text-xl text-gray-900">
                   Total: ₹{subTotal}
                 </span>
                 <button className="flex ml-auto text-white bg-orange-500 border-0 py-2 px-6 focus:outline-none hover:bg-orange-600 rounded">
-                  Confirm
+                  Track Order
                 </button>
               </div>
             </div>

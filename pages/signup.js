@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
@@ -9,11 +9,15 @@ const Signup = () => {
   const handleOnChange = (event) => {
     setCredentials({ ...credentials, [event.target.name]: event.target.value });
   };
-
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      router.push("/");
+    }
+  }, []);
   const handleOnSubmit = async (event) => {
     event.preventDefault();
     //api req to "http://localhost:3000/api/signup" , METHOD:POST
-    const response = await fetch(`http://localhost:3000/api/signup`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -26,8 +30,8 @@ const Signup = () => {
     });
     const json = await response.json();
     if (json.success) {
-      localStorage.setItem("auth-token", json.authtoken);
-      toast.success("Login Succesful", {
+      // localStorage.setItem("token", json.authtoken);
+      toast.success("Signed Up Successfully", {
         position: "top-right",
         autoClose: 2000,
         hideProgressBar: false,
@@ -36,13 +40,13 @@ const Signup = () => {
         draggable: true,
         progress: undefined,
       });
-      // setTimeout(function () {
-      //   navigate("/");
-      // }, 3000);
+      setTimeout(function () {
+        router.push("/login");
+      }, 3000);
     } else {
       toast.error("Internal Server Error", {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: false,
@@ -70,8 +74,8 @@ const Signup = () => {
               <h1 className="z-20 text-7xl font-bold text-white tracking-wide text-center ">
                 Create A New Account
               </h1>
-              <div className="bg-white h-3 w-20 rounded-xl mx-auto my-8"></div>
-              <p className="w-[50%] mx-auto">
+              <div className="bg-white h-3 w-48 rounded-xl mx-auto my-8"></div>
+              <p className="w-[80%] mx-auto">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
                 Aspernatur, eos.
               </p>
@@ -100,9 +104,9 @@ const Signup = () => {
           />
           <input
             type="text"
-            id="username"
-            name="username"
-            placeholder="Username"
+            id="name"
+            name="name"
+            placeholder="Name"
             className="my-3 border-orange-600 border-l-2 bg-slate-100 h-8 w-72 focus:border-0 px-1"
             onChange={handleOnChange}
           />

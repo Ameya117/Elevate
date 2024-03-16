@@ -31,14 +31,14 @@ const Hoodies = (props) => {
                         {products[item].title}
                       </h2>
                       <p className="mt-1">₹{products[item].price}</p>
-                      <div className="mt-1">
+                      <div className="mt-1 text-sm">
                         <span>Sizes: </span>
                         {products[item].size.includes("S") && <span className="border px-1 mx-1 w-4 border-black">S</span>}
                         {products[item].size.includes("M") && <span className="border px-1 mx-1 w-4 border-black">M</span>}
                         {products[item].size.includes("L") && <span className="border px-1 mx-1 w-4 border-black">L</span>}
                         {products[item].size.includes("XL") && <span className="border px-1 mx-1 w-4 border-black">XL</span>}
                       </div>
-                      <div className="mt-1 flex flex-row">
+                      <div className="mt-1 flex flex-row text-sm">
                         <span>Colors: </span>
                         {products[item].color.includes("green") && <div className="bg-lime-500 h-4 w-4 mx-1 rounded-xl my-auto"></div>}
                         {products[item].color.includes("yellow") && <div className="bg-yellow-400 h-4 w-4 mx-1 rounded-xl my-auto"></div>}

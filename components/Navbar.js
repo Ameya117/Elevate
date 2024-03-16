@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../styles/navbar.module.css";
 import Link from "next/link";
 import { FaBars } from "react-icons/fa";
@@ -7,19 +7,28 @@ import { FaShoppingCart } from "react-icons/fa";
 import { CiCirclePlus } from "react-icons/ci";
 import { CiCircleMinus } from "react-icons/ci";
 import { FaUserCircle } from "react-icons/fa";
+import { RiArrowDropDownLine } from "react-icons/ri";
 import { useRouter } from "next/router";
+import { LuLogOut } from "react-icons/lu";
+import { Toaster, toast } from "sonner";
 
 const Navbar = (props) => {
-  const ref = useRef();
   const router = useRouter();
-  const navigateTo = () => router.push("/dashboard/app");
   const { cart, removeFromCart, subTotal, clearCart, addToCart } = props;
   const [icon, setIcon] = useState("bars");
+  const [dropdown, setDropdown] = useState();
+  const [token, setToken] = useState();
   const [selected, setSelected] = useState(false);
   const handleIcon = () => {
     icon === "bars" ? setIcon("close") : setIcon("bars");
   };
+  useEffect(() => {
+    setToken(localStorage.getItem("token"));
+  });
 
+  const toggleDropdown = () => {
+    setDropdown(!dropdown);
+  };
 
   let element;
   if (icon === "bars") {
@@ -27,6 +36,15 @@ const Navbar = (props) => {
   } else {
     element = <IoCloseOutline />;
   }
+  const handleLogout = (e) => {
+    e.preventDefault();
+    localStorage.removeItem("token");
+    setToken();
+    toast.success("logged out");
+    setTimeout(function () {
+      router.push("/");
+    }, 1000);
+  };
   const handleNavbar = () => {
     let ul = document.querySelector("ul");
     icon === "close"
@@ -43,19 +61,23 @@ const Navbar = (props) => {
   };
   const handleSidebar = (e) => {
     e.preventDefault();
-    const sidebar = document.querySelector(".sidebar");
-    const sidebar_cover = document.querySelector(".sidebar-cover");
-    !selected
-      ? (setSelected(true),
-        sidebar.classList.remove("-right-[150%]"),
-        sidebar_cover.classList.remove("-left-[150%]"),
-        sidebar.classList.add("right-0"),
-        sidebar_cover.classList.add("left-0"))
-      : (setSelected(false),
-        sidebar.classList.add("-right-[150%]"),
-        sidebar_cover.classList.add("-left-[150%]"),
-        sidebar_cover.classList.remove("left-0"),
-        sidebar.classList.remove("right-0"));
+    if (token) {
+      const sidebar = document.querySelector(".sidebar");
+      const sidebar_cover = document.querySelector(".sidebar-cover");
+      !selected
+        ? (setSelected(true),
+          sidebar.classList.remove("-right-[150%]"),
+          sidebar_cover.classList.remove("-left-[150%]"),
+          sidebar.classList.add("right-0"),
+          sidebar_cover.classList.add("left-0"))
+        : (setSelected(false),
+          sidebar.classList.add("-right-[150%]"),
+          sidebar_cover.classList.add("-left-[150%]"),
+          sidebar_cover.classList.remove("left-0"),
+          sidebar.classList.remove("right-0"));
+    } else {
+      toast.info("Login to view cart");
+    }
   };
 
   const handleOnClickCheckout = (e) => {
@@ -73,19 +95,35 @@ const Navbar = (props) => {
         sidebar_cover.classList.add("-left-[150%]"),
         sidebar_cover.classList.remove("left-0"),
         sidebar.classList.remove("right-0"));
+
+    router.push("/checkout");
   };
   return (
     <>
       <div
         className={`${router.pathname === "/signup" ? "hidden" : "block"} ${
           router.pathname === "/login" ? "hidden" : "block"
-        } ${router.pathname === "/forgot" ? "hidden" : "block"} sticky top-0 bg-white  z-[10]`}
+        } ${
+          router.pathname === "/forgot" ? "hidden" : "block"
+        } sticky top-0 bg-white  z-[10]`}
       >
-        <nav className={`h-16 lg:h-20 shadow-md lg:flex lg:flex-row lg:justify-between `}>
+        <Toaster richColors position="top-right" duration={2000} />
+        <nav
+          className={`h-16 shadow-md lg:flex lg:flex-row lg:justify-between `}
+        >
           <div className="float-right flex relative top-5 text-2xl lg:hidden">
-            <Link href={"/login"} className="my-auto mx-2 ">
+            <Link
+              href={"/login"}
+              className={`${!token ? "block" : "hidden"} my-auto mx-2`}
+            >
               <FaUserCircle />
             </Link>
+            <span
+              onClick={handleLogout}
+              className={`${token ? "block" : "hidden"} my-auto mx-2`}
+            >
+              <LuLogOut />
+            </span>
             <input
               type="checkbox"
               id="check"
@@ -106,7 +144,8 @@ const Navbar = (props) => {
           >
             Elevate
           </Link>
-          <ul className="block lg:hidden text-center space-y-5 bg-blue-50 lg:bg-white h-[200vh] w-[100vw] lg:relative font-semibold text-xl transition-all duration-300 lg:transition-none fixed top-16 -left-[100%] pt-10">
+          {/* Phone navbar */}
+          <ul className="block lg:hidden text-center space-y-5 bg-[#F0F8FF] h-[200vh] w-[100vw] lg:relative font-semibold text-xl transition-all duration-300 lg:transition-none fixed top-16 -left-[100%] pt-10">
             <li className={styles.navlink}>
               <Link href="/shoes" onClick={handleOnClickLink}>
                 Shoes
@@ -121,6 +160,12 @@ const Navbar = (props) => {
               <Link href="/hoodies" onClick={handleOnClickLink}>
                 Hoodies
               </Link>
+            </li>
+            <li className={styles.navlink}>
+              <Link href="/orders">Orders</Link>{" "}
+            </li>
+            <li className={styles.navlink}>
+              <Link href="/myaccount">My Account</Link>{" "}
             </li>
             <li className={styles.navlink}>
               <button type="button" onClick={handleSidebar}>
@@ -142,31 +187,78 @@ const Navbar = (props) => {
               </li>
             </ul>
           </div>
-          <div className="hidden text-2xl lg:flex">
-            <Link href={"/login"} className="my-auto mx-2 cursor-pointer">
+          <div className="hidden text-xl lg:flex">
+            {token && (
+              <span
+                className="text-3xl my-auto h-fit cursor-pointer"
+                // onClick={toggleDropdown}
+              >
+                <RiArrowDropDownLine
+                  onMouseOver={() => {
+                    setDropdown(true);
+                  }}
+                />
+              </span>
+            )}
+            {token && dropdown && (
+              <div
+                onMouseOver={() => {
+                  setDropdown(true);
+                }}
+                onMouseLeave={() => {
+                  setDropdown(false);
+                }}
+                className="absolute top-16 bg-white shadow-lg border py-2 w-40 right-2 rounded-lg my-1"
+              >
+                <ul className="text-sm font-semibold text-center">
+                  <li className="hover:bg-orange-200 cursor-pointer">
+                    <span className="px-1">
+                      <Link href="/myaccount">My account</Link>
+                    </span>
+                  </li>
+                  <li className="hover:bg-orange-200 cursor-pointer my-1">
+                    <span className="px-1">
+                      <Link href="/orders">Orders</Link>
+                    </span>
+                  </li>
+                  <li className="hover:bg-orange-200 cursor-pointer my-1">
+                    <span className="px-1">
+                      <button onClick={handleLogout} href="/orders">
+                        Logout
+                      </button>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            )}
+            <Link
+              href={"/login"}
+              className={`${!token ? "block" : "hidden"} my-auto mx-2`}
+            >
               <FaUserCircle />
             </Link>
 
             <button
               type="button"
               onClick={handleSidebar}
-              className="h-fit my-auto mx-10 hidden lg:block"
+              className="h-fit my-auto mx-3 hidden lg:block"
             >
               <FaShoppingCart />
             </button>
           </div>
           <div className="flex flex-row absolute">
             <div className="sidebar-cover fixed w-[20%] md:w-[70%] lg:w-[75%] -left-[150%] opacity-0 h-[120vh] bg-black/80 transition-all duration-300 overflow-y-scroll"></div>
-            <div className="sidebar w-[80%] md:w-[30%] lg:w-[25%] bg-orange-50 lg:bg-blue-50 flex flex-col p-6 fixed -right-[150%] top-0  transition-all duration-300 z-[50] h-[100vh] border-l-4  border-black rounded-l-lg">
+            <div className="sidebar w-[80%] md:w-[30%] lg:w-[25%] bg-[#f7e8e5] flex flex-col p-6 fixed -right-[150%] top-0  transition-all duration-300 z-[50] h-[100vh] border-l-2  border-black rounded-l-lg">
               <button
                 type="button"
                 onClick={handleSidebar}
-                className="border text-xl border-black h-12 w-12 grid place-content-center rounded-xl bg-white ml-auto"
+                className="border text-xl border-black h-6 w-6 grid place-content-center rounded-lg bg-white ml-auto"
               >
                 <IoCloseOutline />
               </button>
               <div>
-                <h1 className="font-bold text-xl">Shopping Cart</h1>
+                <h1 className="font-bold text-xl mb-3">Shopping Cart</h1>
+                {/* <div className="w-[65%] h-1 bg-black rounded-xl m-auto"></div> */}
                 {Object.keys(cart).length > 0 ? (
                   <div>
                     <ol className="list-decimal space-y-5 mt-5 ml-4">
@@ -174,8 +266,12 @@ const Navbar = (props) => {
                         return (
                           <li key={item}>
                             <div className="flex flex-row">
-                              <h3 className="mr-4 text-xl">
-                                {cart[item].name} [{cart[item].size.size}/{cart[item].variant.color}]
+                              <h3 className="mr-4 text-lg">
+                                {cart[item].name}{" "}
+                                <span className="font-light">
+                                  [{cart[item].size.size}/
+                                  {cart[item].variant.color}]
+                                </span>
                               </h3>
                               <h3 className="flex justify-center my-auto text-lg md:text-xl">
                                 <span
@@ -216,9 +312,9 @@ const Navbar = (props) => {
                         );
                       })}
                     </ol>
-                    <div className="my-4">
+                    <div className="my-4 mt-10">
                       {subTotal && (
-                        <span className="text-lg lg:text-xl font-semibold mt-10 mx-auto">
+                        <span className="text-lg font-normal italic mx-auto">
                           Subtotal: ₹{subTotal}
                         </span>
                       )}
@@ -233,7 +329,7 @@ const Navbar = (props) => {
               <div
                 className={`${
                   Object.keys(cart).length == 0 ? "hidden" : "block"
-                } flex flex-row justify-center`}
+                } flex flex-col justify-center w-[60%] mx-auto`}
               >
                 <button
                   onClick={clearCart}
@@ -243,10 +339,10 @@ const Navbar = (props) => {
                   Clear Cart
                 </button>
                 <span
-                  className="py-2 border-2 border-black transition-none lg:transition-all duration-300 px-4 mx-2 my-4 hover:bg-black hover:text-white"
+                  className="py-2 border-2 border-black transition-none lg:transition-all duration-300 px-4 mx-2 my-4 hover:bg-black hover:text-white text-center cursor-pointer"
                   onClick={handleOnClickCheckout}
                 >
-                  <Link href="/checkout">Checkout</Link>
+                  Checkout
                 </span>
               </div>
             </div>

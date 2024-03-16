@@ -3,15 +3,24 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// import { ToastContainer, toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+import LoadingBar from "react-top-loading-bar";
 
 export default function App({ Component, pageProps }) {
   const [cart, setCart] = useState({});
   const [subTotal, setSubTotal] = useState();
+  const [progress, setProgress] = useState(0);
   const router = useRouter();
 
   useEffect(() => {
+    router.events.on("routeChangeStart", () => {
+      setProgress(40);
+    });
+    router.events.on("routeChangeComplete", () => {
+      setProgress(100);
+    });
+
     try {
       // console.log(myCart);
       if (localStorage.getItem("cart")) {
@@ -43,7 +52,6 @@ export default function App({ Component, pageProps }) {
     }
     setCart(newCart);
     saveCart(newCart);
- 
   };
 
   const removeFromCart = (itemCode, qty, price, name, size, variant) => {
@@ -78,6 +86,12 @@ export default function App({ Component, pageProps }) {
 
   return (
     <>
+      <LoadingBar
+        color="#f97316"
+        progress={progress}
+        onLoaderFinished={() => setProgress(0)}
+        waitingTime={500}
+      />
       <Navbar
         cart={cart}
         addToCart={addToCart}
@@ -95,7 +109,7 @@ export default function App({ Component, pageProps }) {
         {...pageProps}
       />
       <Footer />
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </>
   );
 }

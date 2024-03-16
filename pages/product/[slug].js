@@ -2,19 +2,19 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Product from "@/Models/Product";
 import mongoose from "mongoose";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
- 
+
+import { Toaster, toast } from 'sonner'
+
 const Slug = (props) => {
   const router = useRouter();
-  const { addToCart, product, variants,buyNow } = props;
+  const { addToCart, product, variants, buyNow } = props;
   const { slug } = router.query;
 
   const [pin, setPin] = useState();
   const [service, setService] = useState();
 
   const checkPincode = async () => {
-    const pins = await fetch("http://localhost:3000/api/pincode");
+    const pins = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/pincode`);
     const pinsJson = await pins.json();
     if (pinsJson.includes(parseInt(pin))) {
       setService(true);
@@ -31,13 +31,13 @@ const Slug = (props) => {
   const [size, setSize] = useState(product.size);
 
   const refreshVariant = (newSize, newColor) => {
-    let url = `http://localhost:3000/product/${variants[newColor][newSize]["slug"]}`;
+    let url = `${process.env.NEXT_PUBLIC_HOST}/product/${variants[newColor][newSize]["slug"]}`;
     setSize(newSize);
     setColor(newColor);
     // window.location = url;
     router.push(url);
   };
-  
+
   return (
     <>
       <section className="text-gray-600 body-font overflow-hidden">
@@ -45,76 +45,17 @@ const Slug = (props) => {
           <div className="lg:w-4/5 mx-auto flex flex-wrap">
             <img
               alt="ecommerce"
-              className="h-auto md:h-[50vh] lg:w-1/2 w-full lg:h-auto object-cover object-bottom lg:object-center rounded"
+              className="h-[45vh] lg:w-1/2 w-[75vh] lg:h-[60vh] object-cover object-bottom lg:object-center rounded mx-auto"
               src={product.img}
             />
             <div className="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
-              <h2 className="text-sm title-font text-gray-500 tracking-widest">
+              <h2 className="text-sm text-gray-500 tracking-widest">
                 Elevate
               </h2>
-              <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">
+              <h1 className="text-gray-900 text-3xl font-medium mb-1">
                 {product.title} - [{product.size}/{product.color}]
               </h1>
-              {/* <div className="flex mb-4">
-                <span className="flex items-center">
-                  <svg
-                    fill="currentColor"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="w-4 h-4 text-orange-500"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                  </svg>
-                  <svg
-                    fill="currentColor"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="w-4 h-4 text-orange-500"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                  </svg>
-                  <svg
-                    fill="currentColor"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="w-4 h-4 text-orange-500"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                  </svg>
-                  <svg
-                    fill="currentColor"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="w-4 h-4 text-orange-500"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                  </svg>
-                  <svg
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="w-4 h-4 text-orange-500"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-                  </svg>
-                  <span className="text-gray-600 ml-3">4 Reviews</span>
-                </span>
-              </div> */}
+            
               <p className="leading-relaxed">{product.desc}</p>
               <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-100 mb-5">
                 <div className="flex">
@@ -261,16 +202,7 @@ const Slug = (props) => {
                       { size },
                       { color }
                     );
-                    toast.success('Added to cart successfully!', {
-                      position: "bottom-right",
-                      autoClose: 2000,
-                      hideProgressBar: false,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                      theme: "dark",
-                      });
+                    toast.success('Item added to cart successfully')
                   }}
                 >
                   Add To Cart
@@ -322,10 +254,10 @@ const Slug = (props) => {
           </div>
         </div>
       </section>
-      <ToastContainer />
     </>
   );
 };
+
 export async function getServerSideProps(context) {
   if (!mongoose.connections[0].readyState) {
     await mongoose.connect(process.env.MONGO_URI);

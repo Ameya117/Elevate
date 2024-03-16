@@ -17,7 +17,7 @@ const Tshirts = (props) => {
                   <Link
                     key={products[item]._id}
                     href={`/product/${products[item].slug}`}
-                    className="h-[50vh] w-[65vw] md:w-[30vw] lg:w-[35vw] xl:w-[20vw] lg:h-[65vh] shadow-xl m-2 md:m-4 mx-auto"
+                    className="h-[50vh] w-[65vw] md:h-[60vh] md:w-[30vw] lg:w-[35vw] xl:w-[20vw] lg:h-[65vh] shadow-xl m-2 md:m-4 mx-auto"
                   >
                     <div className="block relative h-[65%] rounded overflow-hidden">
                       <img
@@ -28,11 +28,11 @@ const Tshirts = (props) => {
                     </div>
                     <div className="p-4">
                       <h3>{products[item].category}</h3>
-                      <h2 className="text-gray-900 title-font text-xl md:text-2xl font-semibold">
+                      <h2 className="text-gray-900 title-font text-lg md:text-xl font-semibold">
                         {products[item].title}
                       </h2>
                       <p className="mt-1">₹{products[item].price}</p>
-                      <div className="mt-1 lg:mt-2">
+                      <div className="mt-1 text-sm">
                         <span>Sizes: </span>
                         {products[item].size.includes("S") && (
                           <span className="border px-1 mx-1 w-4 border-black">
@@ -55,7 +55,7 @@ const Tshirts = (props) => {
                           </span>
                         )}
                       </div>
-                      <div className="mt-1 lg:mt-2 flex flex-row">
+                      <div className="mt-1 flex flex-row text-sm">
                         <span>Colors: </span>
                         {products[item].color.includes("green") && (
                           <div className="bg-lime-500 h-4 w-4 mx-1 rounded-xl my-auto"></div>

@@ -17,7 +17,7 @@ console.log(products)
                   <Link
                     key={products[item]._id}
                     href={`/product/${products[item].slug}`}
-                    className="h-[45vh] w-[65vw] md:w-[30vw] lg:w-[25vw] xl:w-[20vw] lg:h-[65vh] shadow-xl m-2 md:m-4 mx-auto "
+                    className="h-[50vh] w-[65vw] md:w-[30vw] lg:w-[25vw] xl:w-[20vw] lg:h-[65vh] shadow-xl m-2 md:m-4 mx-auto "
                   >
                     <div className="block relative h-[65%] rounded overflow-hidden">
                       <img
@@ -32,14 +32,14 @@ console.log(products)
                         {products[item].title}
                       </h2>
                       <p className="mt-1">₹{products[item].price}</p>
-                      <div className="mt-1">
+                      <div className="mt-1 text-sm">
                         <span>Sizes: </span>
                         {products[item].size.includes("S") && <span className="border px-1 mx-1 w-4 border-black">S</span>}
                         {products[item].size.includes("M") && <span className="border px-1 mx-1 w-4 border-black">M</span>}
                         {products[item].size.includes("L") && <span className="border px-1 mx-1 w-4 border-black">L</span>}
                         {products[item].size.includes("XL") && <span className="border px-1 mx-1 w-4 border-black">XL</span>}
                       </div>
-                      <div className="mt-1 flex flex-row">
+                      <div className="mt-1 flex flex-row text-sm">
                         <span>Colors: </span>
                         {products[item].color.includes("green") && <div className="bg-lime-500 h-4 w-4 mx-1 rounded-xl my-auto"></div>}
                         {products[item].color.includes("yellow") && <div className="bg-yellow-400 h-4 w-4 mx-1 rounded-xl my-auto"></div>}
