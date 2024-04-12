@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { motion, useTransform, useScroll } from "framer-motion";
+import { motion } from "framer-motion";
 
 const HomePage = () => {
   const fadeInAnimationVariants = {

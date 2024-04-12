@@ -1,6 +1,11 @@
+import { useRouter } from "next/router";
 import React from "react";
+import Order from "@/Models/Order";
+import mongoose from "mongoose";
 
-const Order = ({ subTotal }) => {
+const MyOrder = ({ subTotal,order }) => {
+
+
   return (
     <>
       <section className="text-gray-600 body-font overflow-hidden">
@@ -24,7 +29,7 @@ const Order = ({ subTotal }) => {
                 </a>
               </div>
 
-              <p className="leading-relaxed mb-4">Order id: XK45J</p>
+              <p className="leading-relaxed mb-4">Order id: {order && order.orderId}</p>
               <div className="flex border-t border-gray-200 py-2">
                 <span className="text-gray-500">Item 1</span>
                 <span className="ml-auto text-gray-900">Blue</span>
@@ -61,4 +66,18 @@ const Order = ({ subTotal }) => {
   );
 };
 
-export default Order;
+export async function getServerSideProps(context) {
+  if (!mongoose.connections[0].readyState) {
+    await mongoose.connect(process.env.MONGO_URI);
+  }
+  let order = await Order.findById(context.query.id);
+
+
+  return {
+    props: {
+      order:JSON.parse(JSON.stringify(order))
+    }, // will be passed to the page component as props
+  };
+}
+
+export default MyOrder;

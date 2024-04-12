@@ -1,12 +1,49 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+
 import { CiCircleMinus, CiCirclePlus } from "react-icons/ci";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Script from "next/script";
 
 const Checkout = ({ cart, clearCart, addToCart, removeFromCart, subTotal }) => {
-  const router = useRouter();
+  const router = useRouter("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [pincode, setPincode] = useState("");
+  const [address, setAddress] = useState("");
+  const [disabled, setDisabled] = useState(true);
+  const [city, setCity] = useState(true);
+  const [state, setState] = useState(true);
+
+  const handleOnChange = (e) => {
+    if (e.target.name == "name") {
+      setName(e.target.value);
+    } else if (e.target.name == "phone") {
+      setPhone(e.target.value);
+    } else if (e.target.name == "email") {
+      setEmail(e.target.value);
+    } else if (e.target.name == "pincode") {
+      setPincode(e.target.value);
+    } else if (e.target.name == "address") {
+      setAddress(e.target.value);
+    }
+
+    setTimeout(() => {
+      if (
+        name.length > 3 &&
+        email.length > 3 &&
+        phone.length > 8 &&
+        address.length > 5 &&
+        pincode.length >= 5
+      ) {
+        setDisabled(false);
+      } else {
+        setDisabled(true);
+      }
+    }, 100);
+  };
   useEffect(() => {
     if (!localStorage.getItem("token")) {
       router.push("/");
@@ -15,7 +52,16 @@ const Checkout = ({ cart, clearCart, addToCart, removeFromCart, subTotal }) => {
 
   const initiatePayment = async () => {
     let oid = Math.floor(Math.random() * Date.now());
-    const data = { cart, subTotal, oid, email: "email" };
+    const data = {
+      cart,
+      subTotal,
+      oid,
+      email: email,
+      name: name,
+      address,
+      pincode,
+      phone,
+    };
     // try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_HOST}/api/pretransaction`,
@@ -79,46 +125,60 @@ const Checkout = ({ cart, clearCart, addToCart, removeFromCart, subTotal }) => {
       <h1 className="text-xl md:text-2xl lg:text3xl font-bold text-center mb-4">
         Checkout
       </h1>
-      <h2 className="text-lg md:text-xl font-semibold my-4">
+      <h2 className="text-base md:text-xl font-semibold my-4">
         1. Delivery Details
       </h2>
       <div className="flex flex-col">
         <div className="flex flex-col lg:flex-row w-[100%]">
-          <label htmlFor="name" className="text-lg ml-0 lg:mr-4 my-auto">
-            Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            className="border border-black px-2 py-1 my-1 focus:border focus:border-orange-500 focus:ring-2 active:ring-blue-200 lg:w-[40%]"
-            placeholder="Enter your name"
-          />
-          <label htmlFor="email" className="text-lg ml-0 lg:mx-4 my-auto">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            className="border border-black px-2 py-1 my-1 focus:border focus:border-orange-500 focus:ring-2 active:ring-blue-200 lg:w-[40%]"
-            placeholder="Enter your name"
-          />
+          <div className="flex flex-col">
+            <label htmlFor="name" className="text-base ml-0 lg:mr-4 my-auto">
+              Name
+            </label>
+            <input
+              onChange={handleOnChange}
+              value={name}
+              type="text"
+              id="name"
+              name="name"
+              className="border border-black px-2 py-1 my-1 mr-2 focus:border focus:border-orange-500 focus:ring-2 active:ring-blue-200 lg:w-[40vw]"
+              placeholder="Enter your name"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="email" className="text-base ml-0 lg:mx-4 my-auto">
+              Email
+            </label>
+            <input
+              onChange={handleOnChange}
+              value={email}
+              type="email"
+              id="email"
+              name="email"
+              className="border border-black px-2 py-1 my-1 mx-0 lg:mx-2 focus:border focus:border-orange-500 focus:ring-2 active:ring-blue-200 lg:w-[40vw]"
+              placeholder="Enter your name"
+            />
+          </div>
         </div>
-        <label htmlFor="phone" className="text-lg ">
+        <label htmlFor="phone" className="text-base mt-2">
           Phone
         </label>
         <input
+          onChange={handleOnChange}
+          value={phone}
           type="text"
           id="phone"
           name="phone"
           className="border border-black px-2 py-1 my-1 focus:border focus:border-orange-500 focus:ring-2 active:ring-blue-200 w-[70%]md:w-[50%] lg:w-[40%]"
           placeholder="Phone no."
+          maxLength={10}
+          minLength={10}
         />
-        <label htmlFor="address" className="text-lg">
+        <label htmlFor="address" className="text-base mt-2">
           Address
         </label>
         <textarea
+          onChange={handleOnChange}
+          value={address}
           type="text"
           id="address"
           name="address"
@@ -127,31 +187,45 @@ const Checkout = ({ cart, clearCart, addToCart, removeFromCart, subTotal }) => {
           rows={5}
         />
         <div className="flex flex-col lg:flex-row w-[100%] my-2">
-          <label htmlFor="city" className="text-lg ml-0 lg:mr-4 my-auto">
-            City
-          </label>
-          <input
-            type="text"
-            id="city"
-            name="city"
-            className="border border-black px-2 py-1 my-1 focus:border focus:border-orange-500 focus:ring-2 active:ring-blue-200 w-[70%]md:w-[50%] lg:w-[40%]"
-            placeholder="City name"
-          />
-
-          <label htmlFor="pincode" className="text-lg ml-0 lg:mx-4 my-auto">
-            Pincode
-          </label>
-          <input
-            type="text"
-            id="pincode"
-            name="pincode"
-            className="border border-black px-2 py-1 my-1 focus:border focus:border-orange-500 focus:ring-2 active:ring-blue-200 w-[70%]md:w-[50%] lg:w-[40%]"
-            placeholder="Enter your area pincode"
-          />
+          <div className="flex flex-col">
+            <label
+              htmlFor="pincode"
+              className="text-base ml-0 lg:mr-4 my-auto "
+            >
+              Pincode
+            </label>
+            <input
+              onChange={handleOnChange}
+              value={pincode}
+              type="text"
+              id="pincode"
+              name="pincode"
+              className="border border-black px-2 py-1 my-1 focus:border focus:border-orange-500 focus:ring-2 active:ring-blue-200  lg:w-[40vw]"
+              placeholder="Enter your area pincode"
+              maxLength={6}
+              minLength={6}
+            />
+          </div>
+          <div className="flex flex-col">
+            <label htmlFor="city" className="text-base ml-0 lg:mx-4 my-auto">
+              City
+            </label>
+            <input
+              onChange={handleOnChange}
+              type="text"
+              id="city"
+              name="city"
+              className="border border-black px-2 py-1 my-1 mx-0 lg:mx-2 focus:border focus:border-orange-500 focus:ring-2 active:ring-blue-200 lg:w-[40vw]"
+              placeholder="City name"
+              readOnly
+            />
+          </div>
         </div>
       </div>
 
-      <h1 className="text-lg md:text-xl font-semibold my-4">2. Review Cart</h1>
+      <h1 className="text-base md:text-xl font-semibold my-4">
+        2. Review Cart
+      </h1>
       <div className="sidebar flex flex-row rounded-xl border border-black overflow-hidden my-4 p-4">
         <div className="w-[100%] bg-white flex flex-col">
           <div>
@@ -167,7 +241,7 @@ const Checkout = ({ cart, clearCart, addToCart, removeFromCart, subTotal }) => {
                             {cart[item].name} [{cart[item].size.size}/
                             {cart[item].variant.color}]{" "}
                           </h3>
-                          <h3 className="flex justify-center my-auto text-lg md:text-xl">
+                          <h3 className="flex justify-center my-auto text-base md:text-xl">
                             <span
                               className="my-auto"
                               onClick={() => {
@@ -206,7 +280,7 @@ const Checkout = ({ cart, clearCart, addToCart, removeFromCart, subTotal }) => {
                   })}
                 </ol>
                 {subTotal && (
-                  <div className="text-lg lg:text-xl font-semibold mt-4">
+                  <div className="text-base lg:text-xl font-semibold mt-4">
                     Subtotal: ₹{subTotal}
                   </div>
                 )}
@@ -226,7 +300,8 @@ const Checkout = ({ cart, clearCart, addToCart, removeFromCart, subTotal }) => {
               <button
                 onClick={initiatePayment}
                 type="button"
-                className="my-auto p-1 lg:py-2 border-2 border-black transition-none lg:transition-all duration-300 lg:px-4 mx-2 hover:bg-black hover:text-white"
+                className="my-auto p-1 rounded-md bg-orange-600 hover:bg-orange-500  transition-none lg:transition-all duration-300 lg:px-4 mx-2  cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={disabled}
               >
                 Pay Now
               </button>

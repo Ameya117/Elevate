@@ -71,7 +71,8 @@ export default function App({ Component, pageProps }) {
 
   const buyNow = (itemCode, qty, price, name, size, variant) => {
     saveCart({});
-    let newCart = { itemCode: { qty, price, name, size, variant } };
+    let newCart = {}
+    newCart[itemCode] = { qty, price, name, size, variant } ;
 
     setCart(newCart);
     saveCart(newCart);
