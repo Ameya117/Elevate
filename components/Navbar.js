@@ -11,6 +11,7 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { useRouter } from "next/router";
 import { LuLogOut } from "react-icons/lu";
 import { Toaster, toast } from "sonner";
+import {signOut} from 'firebase/auth';
 
 const Navbar = (props) => {
   const router = useRouter();
@@ -37,6 +38,14 @@ const Navbar = (props) => {
     element = <IoCloseOutline />;
   }
   const handleLogout = (e) => {
+    /*
+    try{
+
+      await signOut(auth);
+    }catch(e){
+      console.error(e)
+    }
+    */
     e.preventDefault();
     localStorage.removeItem("token");
     setToken();

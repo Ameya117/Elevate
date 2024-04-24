@@ -3,6 +3,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import {createUserWithEmailAndPassword,signInWithPopup} from 'firebase/auth';
+import { auth, googleProvider } from "@/config/firebase";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({ email: "", password: "" });
@@ -19,7 +21,9 @@ const Login = () => {
 
   const handleOnSubmit = async (event) => {
     event.preventDefault();
-    //api req to "http://localhost:3000/api/login" , METHOD:POST
+    
+
+    // api req to "http://localhost:3000/api/login" , METHOD:POST
     const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/login`, {
       method: "POST",
       headers: {
@@ -58,6 +62,14 @@ const Login = () => {
       });
     }
   };
+
+  const signInWithGoogle = async () => {
+    try{
+      await signInWithPopup(auth, googleProvider);
+    }catch(e){  
+      console.error(e);
+    } 
+  }
   const handleNewUser = () => {
     // navigate("/signup");
     router.push("/signup");
@@ -140,6 +152,9 @@ const Login = () => {
           >
             Login
           </button>
+
+          <span className="mx-auto my-10">------OR-------</span>
+          <button className="rounded-xl bg-orange-500 py-1 font-semibold mt-12 text-lg text-white hover:bg-orange-600" onClick={signInWithGoogle}>Sign in With Google</button>
 
           <ToastContainer />
         </form>

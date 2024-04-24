@@ -2,6 +2,8 @@ import React, {useEffect, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
+import {createUserWithEmailAndPassword,signInWithPopup} from 'firebase/auth';
+import { auth, googleProvider } from "@/config/firebase";
 
 const Signup = () => {
   const [credentials, setCredentials] = useState({name:"", email: "", password: "" });
@@ -16,6 +18,14 @@ const Signup = () => {
   }, []);
   const handleOnSubmit = async (event) => {
     event.preventDefault();
+
+    // try{
+
+    //   const response = await createUserWithEmailAndPassword(auth, credentials.email, credentials.password);
+    //   console.log(response)
+    // }catch(e){
+    //   console.error(e);
+    // }
     //api req to "http://localhost:3000/api/signup" , METHOD:POST
     const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/signup`, {
       method: "POST",
