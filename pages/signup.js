@@ -28,7 +28,6 @@ const Signup = () => {
     // }
     //api req to "http://localhost:3000/api/signup" , METHOD:POST
     const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/signup`, {
-      mode: 'no-cors',
 
       method: "POST",
       headers: {
@@ -42,6 +41,7 @@ const Signup = () => {
       }),
     });
     const json = await response.json();
+    console.log(json)
     if (json.success) {
       toast.success("Signed Up Successfully", {
         position: "top-right",

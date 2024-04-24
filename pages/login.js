@@ -25,7 +25,6 @@ const Login = () => {
 
     // api req to "http://localhost:3000/api/login" , METHOD:POST
     const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/login`, {
-      mode: 'no-cors',
       method: "POST",
       headers: {
         "Content-Type": "application/json",
