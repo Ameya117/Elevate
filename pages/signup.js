@@ -28,9 +28,12 @@ const Signup = () => {
     // }
     //api req to "http://localhost:3000/api/signup" , METHOD:POST
     const response = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/signup`, {
+      mode: 'no-cors',
+
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": '*',
       },
       body: JSON.stringify({
         name: credentials.name,
@@ -40,7 +43,6 @@ const Signup = () => {
     });
     const json = await response.json();
     if (json.success) {
-      // localStorage.setItem("token", json.authtoken);
       toast.success("Signed Up Successfully", {
         position: "top-right",
         autoClose: 2000,
